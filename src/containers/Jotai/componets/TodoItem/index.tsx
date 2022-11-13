@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { todoAtomFamily, todoIdLoadingAtom, todosAtom } from 'containers/componets/TodoList'
+import { jotaiAtoms } from 'containers/Jotai/store'
 import { useAtom, useSetAtom } from 'jotai'
 import { memo, useEffect } from 'react'
 
@@ -9,9 +9,9 @@ interface IProps {
 }
 
 export const JotaiTodoItem = memo(({ id, loading }: IProps) => {
-  const setTodos = useSetAtom(todosAtom)
-  const setTodoLoadingId = useSetAtom(todoIdLoadingAtom)
-  const [todo, setTodo] = useAtom(todoAtomFamily({ id }))
+  const setTodos = useSetAtom(jotaiAtoms.todosAtom)
+  const setTodoLoadingId = useSetAtom(jotaiAtoms.todoIdLoadingAtom)
+  const [todo, setTodo] = useAtom(jotaiAtoms.todoAtomFamily({ id }))
 
   useEffect(() => {
     if (todo.requestId) {
@@ -28,7 +28,7 @@ export const JotaiTodoItem = memo(({ id, loading }: IProps) => {
 
   const onDelete = () => {
     setTodos((prev) => prev.filter((item) => item !== id))
-    todoAtomFamily.remove({ id })
+    jotaiAtoms.todoAtomFamily.remove({ id })
   }
 
   if (loading) {

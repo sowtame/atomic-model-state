@@ -1,4 +1,4 @@
-import { JotaiTodoList } from 'containers/componets/TodoList'
+import { JotaiTodoList } from 'containers/Jotai/componets/TodoList'
 import { Provider } from 'jotai'
 
 export const JotaiContainer = () => {
