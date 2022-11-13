@@ -1,38 +1,41 @@
-import axios from 'axios'
 import { JotaiTodoItem } from 'containers/componets/TodoItem'
 import { atom, useAtom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 import { nanoid } from 'nanoid'
 
 export interface IJotaiTodo {
   id: string
-  title: string
+  title?: string
+  requestId?: number
+  loading?: boolean
 }
 
-export const todosAtom = atom<IJotaiTodo[]>([])
-export const loadingIdAtom = atom<string>('')
+export const todosAtom = atom<string[]>([])
+
+export const todoAtomFamily = atomFamily(
+  (param: IJotaiTodo) => atom({ title: param.title || 'No title', ...param }),
+  (a: IJotaiTodo, b: IJotaiTodo) => a.id === b.id
+)
 
 export const JotaiTodoList = () => {
   const [todos, setTodos] = useAtom(todosAtom)
-  const [loadingId, setLoading] = useAtom(loadingIdAtom)
 
   const addItem = () => {
-    setTodos([...todos, { id: nanoid(), title: `Test title № ${todos.length + 2}` }])
+    const id = nanoid()
+    setTodos([...todos, id])
+    todoAtomFamily({ id })
   }
 
   const addItemAync = async () => {
-    try {
-      // setLoading(id)
-      const { data } = await axios.get(`https://jsonplaceholder.typicode.com/todos/${todos.length + 1}`)
-      setTodos([...todos, { id: data.id, title: data.title }])
-    } catch (error) {
-      setLoading('')
-    }
+    const id = nanoid()
+    setTodos([...todos, id])
+    todoAtomFamily({ id, requestId: todos.length + 1, loading: true })
   }
   return (
     <div className="todo_wrapper">
       <h2>Jotai</h2>
-      {todos.map((item) => (
-        <JotaiTodoItem loading={item.id === loadingId} item={item} />
+      {todos.map((id) => (
+        <JotaiTodoItem key={id} id={id} />
       ))}
       <div className="action_buttons">
         <button onClick={addItem}>Add item</button>

@@ -1,34 +1,38 @@
-import { IJotaiTodo, todosAtom } from 'containers/componets/TodoList'
-import { atom, PrimitiveAtom, useAtom, useSetAtom } from 'jotai'
-import { memo } from 'react'
-import { atomFamily } from 'jotai/utils'
+import axios from 'axios'
+import { todoAtomFamily, todosAtom } from 'containers/componets/TodoList'
+import { useAtom, useSetAtom } from 'jotai'
+import { memo, useEffect } from 'react'
 
 interface IProps {
-  item: IJotaiTodo
-  loading: boolean
+  id: string
 }
 
-// const todoAtomFamily = atomFamily((param: string) => atom({ title: '' }))
-
-export const JotaiTodoItem = memo(({ item: atom, loading }: IProps) => {
+export const JotaiTodoItem = memo(({ id }: IProps) => {
   const setTodos = useSetAtom(todosAtom)
-  // const [item, setItem] = useAtom(todoAtomFamily(atom.id))
+  const [todo, setTodo] = useAtom(todoAtomFamily({ id }))
+
+  useEffect(() => {
+    if (todo.requestId) {
+      axios.get(`https://jsonplaceholder.typicode.com/todos/${todo.requestId}`).then(({ data }) => {
+        setTodo({ ...todo, loading: false, ...data })
+      })
+    }
+  }, [])
 
   const onDelete = () => {
-    setTodos((prev) => prev.filter((item) => item.id !== atom.id))
+    setTodos((prev) => prev.filter((item) => item !== id))
+    todoAtomFamily.remove({ id })
+  }
+
+  if (todo.loading) {
+    return <div className="todo_item">Loading...</div>
   }
 
   return (
     <div className="todo_item">
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <div>{atom.id}</div>
-          <div>{atom.title}</div>
-          <button onClick={onDelete}>X</button>
-        </>
-      )}
+      <div>{todo.id}</div>
+      <div>{todo.title}</div>
+      <button onClick={onDelete}>X</button>
     </div>
   )
 })
