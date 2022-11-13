@@ -1,10 +1,10 @@
-import { todoAtoms, ITodoItem } from 'containers/Recoil/Recoil'
+import { todoAtoms, IRecoilTodoItem } from 'containers/Recoil/Recoil'
 import { removeItemAtIndex } from 'containers/Recoil/utils'
 import { memo } from 'react'
 import { useSetRecoilState } from 'recoil'
 
 interface IProps {
-  item: ITodoItem
+  item: IRecoilTodoItem
   index: number
 }
 

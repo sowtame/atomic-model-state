@@ -1,10 +1,10 @@
 import { RecoilTodoItem } from 'containers/Recoil/components/TodoItem'
 import { RecoilTodoItemAsync } from 'containers/Recoil/components/TodoItemAsync'
-import { ITodoItem, todoAtoms } from 'containers/Recoil/Recoil'
+import { IRecoilTodoItem, todoAtoms } from 'containers/Recoil/Recoil'
 import { nanoid } from 'nanoid'
 import { useRecoilState } from 'recoil'
 
-const getDefaultTodoItem = (): ITodoItem => ({
+const getDefaultTodoItem = (): IRecoilTodoItem => ({
   id: nanoid(),
   title: '',
 })
