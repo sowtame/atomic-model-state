@@ -7,10 +7,10 @@ export interface IJotaiTodo {
   id: string
   title?: string
   requestId?: number
-  loading?: boolean
 }
 
 export const todosAtom = atom<string[]>([])
+export const todoIdLoadingAtom = atom<string>('')
 
 export const todoAtomFamily = atomFamily(
   (param: IJotaiTodo) => atom({ title: param.title || 'No title', ...param }),
@@ -19,6 +19,7 @@ export const todoAtomFamily = atomFamily(
 
 export const JotaiTodoList = () => {
   const [todos, setTodos] = useAtom(todosAtom)
+  const [todoLoadingId, setTodoLoadingId] = useAtom(todoIdLoadingAtom)
 
   const addItem = () => {
     const id = nanoid()
@@ -29,17 +30,20 @@ export const JotaiTodoList = () => {
   const addItemAync = async () => {
     const id = nanoid()
     setTodos([...todos, id])
-    todoAtomFamily({ id, requestId: todos.length + 1, loading: true })
+    setTodoLoadingId(id)
+    todoAtomFamily({ id, requestId: todos.length + 1 })
   }
   return (
     <div className="todo_wrapper">
       <h2>Jotai</h2>
       {todos.map((id) => (
-        <JotaiTodoItem key={id} id={id} />
+        <JotaiTodoItem loading={todoLoadingId === id} key={id} id={id} />
       ))}
       <div className="action_buttons">
         <button onClick={addItem}>Add item</button>
-        <button onClick={addItemAync}>Add item async</button>
+        <button disabled={!!todoLoadingId} onClick={addItemAync}>
+          Add item async
+        </button>
       </div>
     </div>
   )
