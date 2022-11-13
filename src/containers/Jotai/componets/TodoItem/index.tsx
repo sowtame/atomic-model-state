@@ -1,17 +1,20 @@
 import axios from 'axios'
 import { jotaiAtoms } from 'containers/Jotai/store'
-import { useAtom, useSetAtom } from 'jotai'
-import { memo, useEffect } from 'react'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { memo, useEffect, useMemo } from 'react'
 
 interface IProps {
   id: string
-  loading: boolean
 }
 
-export const JotaiTodoItem = memo(({ id, loading }: IProps) => {
+export const JotaiTodoItem = memo(({ id }: IProps) => {
   const setTodos = useSetAtom(jotaiAtoms.todosAtom)
   const setTodoLoadingId = useSetAtom(jotaiAtoms.todoIdLoadingAtom)
   const [todo, setTodo] = useAtom(jotaiAtoms.todoAtomFamily({ id }))
+
+  const loadingAtom = useMemo(() => atom((get) => get(jotaiAtoms.todoIdLoadingAtom) === id), [id])
+
+  const loading = useAtomValue(loadingAtom)
 
   useEffect(() => {
     if (todo.requestId) {
