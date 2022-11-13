@@ -34,6 +34,7 @@ export const RecoilTodoList = () => {
 
   return (
     <div className="todo_wrapper">
+      <h2>Recoil</h2>
       {todoList.map((item, index) => {
         if (item.async) {
           return <RecoilTodoItemAsync key={item.id} index={index} />

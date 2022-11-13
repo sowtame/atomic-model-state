@@ -1,9 +1,7 @@
 import { RecoilTodoList } from 'containers/Recoil/components/TodoList'
 import { RecoilRoot } from 'recoil'
 
-interface IProps {}
-
-export const RecoilContainer = ({}: IProps) => {
+export const RecoilContainer = () => {
   return (
     <RecoilRoot>
       <div>
